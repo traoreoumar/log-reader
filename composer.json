@@ -19,5 +19,13 @@
         "psr-4": {
             "OumarTraore\\LogReader\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OumarTraore\\LogReader\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }

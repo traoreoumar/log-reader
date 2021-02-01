@@ -1,0 +1,3 @@
+[2018-07-05 11:10:35] channel.INFO: This is a log entry! [] []
+[2018-07-09 02:58:27] channel.WARNING: This is a log warning! ^_^ [] []
+[2018-07-09 02:58:27] channel2.ERROR: This is a log error! ^_^ [] []
