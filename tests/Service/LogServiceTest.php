@@ -110,6 +110,40 @@ class LogServiceTest extends TestCase
         ), $result['logs'][2]);
     }
 
+    public function testWithLogFilterDtoChannels()
+    {
+        $path = './tests/fixtures/log/sample.log';
+        $logFilterDto = (new LogFilterDto())
+            ->setChannels(['channel'])
+        ;
+
+        $result = $this->logService->getLogsFromFile($path, $logFilterDto);
+
+        $this->assertCount(2, $result['logs']);
+
+        $this->assertEquals(new LogDto(
+            $path,
+            1,
+            new \DateTime('2018-07-09 02:58:27'),
+            'channel',
+            'WARNING',
+            'This is a log warning! ^_^',
+            [],
+            [],
+        ), $result['logs'][0]);
+
+        $this->assertEquals(new LogDto(
+            $path,
+            0,
+            new \DateTime('2018-07-05 11:10:35'),
+            'channel',
+            'INFO',
+            'This is a log entry!',
+            [],
+            [],
+        ), $result['logs'][1]);
+    }
+
     public function testWithLogFilterDtoDirection()
     {
         $path = './tests/fixtures/log/sample.log';
@@ -150,6 +184,29 @@ class LogServiceTest extends TestCase
             'channel',
             'INFO',
             'This is a log entry!',
+            [],
+            [],
+        ), $result['logs'][0]);
+    }
+
+    public function testWithLogFilterDtoLevels()
+    {
+        $path = './tests/fixtures/log/sample.log';
+        $logFilterDto = (new LogFilterDto())
+            ->setLevels(['WARNING'])
+        ;
+
+        $result = $this->logService->getLogsFromFile($path, $logFilterDto);
+
+        $this->assertCount(1, $result['logs']);
+
+        $this->assertEquals(new LogDto(
+            $path,
+            1,
+            new \DateTime('2018-07-09 02:58:27'),
+            'channel',
+            'WARNING',
+            'This is a log warning! ^_^',
             [],
             [],
         ), $result['logs'][0]);

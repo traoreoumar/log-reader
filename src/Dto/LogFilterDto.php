@@ -20,9 +20,19 @@ class LogFilterDto
     public const DIRECTION_AFTER = 'after';
 
     /**
+     * @var array
+     */
+    private $channels = [];
+
+    /**
      * @var string
      */
     private $direction = self::DIRECTION_BEFORE;
+
+    /**
+     * @var array
+     */
+    private $levels = [];
 
     /**
      * @var int
@@ -34,6 +44,18 @@ class LogFilterDto
      */
     private $offset;
 
+    public function getChannels(): array
+    {
+        return $this->channels;
+    }
+
+    public function setChannels(array $channels): self
+    {
+        $this->channels = $channels;
+
+        return $this;
+    }
+
     public function getDirection(): string
     {
         return $this->direction;
@@ -42,6 +64,18 @@ class LogFilterDto
     public function setDirection(string $direction): self
     {
         $this->direction = $direction;
+
+        return $this;
+    }
+
+    public function getLevels(): array
+    {
+        return $this->levels;
+    }
+
+    public function setLevels(array $levels): self
+    {
+        $this->levels = $levels;
 
         return $this;
     }
