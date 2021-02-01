@@ -38,6 +38,8 @@ class LogService
         $logReader = $this->createLogReader($path, $pattern);
 
         $filterChannels = $logFilterDto->getChannels();
+        $filterDateFrom = $logFilterDto->getDateFrom();
+        $filterDateTo = $logFilterDto->getDateTo();
         $filterDirection = $logFilterDto->getDirection();
         $filterLevels = $logFilterDto->getLevels();
         $filterLimit = $logFilterDto->getLimit();
@@ -69,7 +71,14 @@ class LogService
                 $extra = $line['extra'];
 
                 if (
-                    (!$filterChannels || in_array($channel, $filterChannels))
+                    (
+                        null === $date
+                        || (
+                            (null === $filterDateFrom || $filterDateFrom->getTimestamp() <= $date->getTimestamp())
+                            && (null === $filterDateTo || $date->getTimestamp() <= $filterDateTo->getTimestamp())
+                        )
+                    )
+                    && (!$filterChannels || in_array($channel, $filterChannels))
                     && (!$filterLevels || in_array($level, $filterLevels))
                 ) {
                     $channels[] = $channel;

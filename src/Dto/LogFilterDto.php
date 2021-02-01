@@ -25,6 +25,16 @@ class LogFilterDto
     private $channels = [];
 
     /**
+     * @var null|\DateTimeInterface
+     */
+    private $dateFrom;
+
+    /**
+     * @var null|\DateTimeInterface
+     */
+    private $dateTo;
+
+    /**
      * @var string
      */
     private $direction = self::DIRECTION_BEFORE;
@@ -52,6 +62,30 @@ class LogFilterDto
     public function setChannels(array $channels): self
     {
         $this->channels = $channels;
+
+        return $this;
+    }
+
+    public function getDateFrom(): ?\DateTimeInterface
+    {
+        return $this->dateFrom;
+    }
+
+    public function setDateFrom(?\DateTimeInterface $dateFrom): self
+    {
+        $this->dateFrom = $dateFrom;
+
+        return $this;
+    }
+
+    public function getDateTo(): ?\DateTimeInterface
+    {
+        return $this->dateTo;
+    }
+
+    public function setDateTo(?\DateTimeInterface $dateTo): self
+    {
+        $this->dateTo = $dateTo;
 
         return $this;
     }
