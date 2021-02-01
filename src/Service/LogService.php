@@ -12,6 +12,7 @@
 namespace OumarTraore\LogReader\Service;
 
 use OumarTraore\LogReader\Dto\LogDto;
+use OumarTraore\LogReader\Dto\LogFilterDto;
 use OumarTraore\LogReader\Reader\LogReader;
 use OumarTraore\LogReader\Reader\LogReaderInterface;
 
@@ -25,16 +26,35 @@ class LogService
     /**
      * Read log file and get logs.
      */
-    public function getLogsFromFile(string $path, string $pattern = null)
+    public function getLogsFromFile(string $path, LogFilterDto $logFilterDto = null, string $pattern = null)
     {
+        if (null === $logFilterDto) {
+            $logFilterDto = new LogFilterDto();
+        }
+
         $channels = [];
         $logs = [];
 
         $logReader = $this->createLogReader($path, $pattern);
-        $logReader->seek($logReader->count() - 1);
+
+        $filterDirection = $logFilterDto->getDirection();
+        $filterLimit = $logFilterDto->getLimit();
+        $filterOffset = $logFilterDto->getOffset();
+
+        if (null !== $filterOffset) {
+            if (LogFilterDto::DIRECTION_BEFORE === $filterDirection) {
+                $logReader->seek($filterOffset - 1);
+            } elseif (LogFilterDto::DIRECTION_AFTER === $filterDirection) {
+                $logReader->seek($filterOffset + 1);
+            }
+        } elseif (LogFilterDto::DIRECTION_BEFORE === $filterDirection) {
+            $logReader->seek($logReader->count() - 1);
+        } else {
+            $logReader->seek(0);
+        }
 
         $outOfBounds = false;
-        while (!$outOfBounds) {
+        while (\count($logs) < $filterLimit && !$outOfBounds) {
             $lineNumber = $logReader->key();
             $line = $logReader->current();
 
@@ -60,11 +80,19 @@ class LogService
                 );
             }
 
-            if ($logReader->sof()) {
-                $outOfBounds = true;
-            }
+            if (LogFilterDto::DIRECTION_BEFORE === $filterDirection) {
+                if ($logReader->sof()) {
+                    $outOfBounds = true;
+                }
 
-            $logReader->prev();
+                $logReader->prev();
+            } elseif (LogFilterDto::DIRECTION_AFTER === $filterDirection) {
+                if ($logReader->eof()) {
+                    $outOfBounds = true;
+                }
+
+                $logReader->next();
+            }
         }
 
         return [
